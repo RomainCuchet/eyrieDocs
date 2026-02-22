@@ -1,0 +1,111 @@
+.pdfDownloadContainer {
+  margin: 3rem 0 2rem;
+  padding: 0;
+}
+
+.pdfDownloadCard {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  background-color: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-toc-border-color);
+  border-radius: var(--ifm-global-radius);
+  transition: all 0.2s ease;
+  box-shadow: var(--ifm-global-shadow-lw);
+}
+
+.pdfDownloadCard:hover {
+  box-shadow: var(--ifm-global-shadow-md);
+  border-color: var(--ifm-color-primary);
+}
+
+.iconWrapper {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(30, 96, 118, 0.08);
+  border-radius: 8px;
+}
+
+.pdfIcon {
+  width: 24px;
+  height: 24px;
+  color: var(--ifm-color-primary);
+}
+
+.textContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  margin: 0 0 0.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ifm-color-content);
+  line-height: 1.3;
+}
+
+.description {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--ifm-color-content-secondary);
+  line-height: 1.4;
+}
+
+.downloadButton {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ifm-color-primary);
+  background-color: transparent;
+  border: 1px solid var(--ifm-toc-border-color);
+  border-radius: var(--ifm-global-radius);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.downloadButton:hover {
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--ifm-color-primary) 0%, var(--ifm-color-primary-light) 100%);
+  border-color: var(--ifm-color-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--ifm-global-shadow-md);
+}
+
+.downloadIcon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] .iconWrapper {
+  background-color: rgba(127, 214, 245, 0.12);
+}
+
+[data-theme='dark'] .downloadButton:hover {
+  color: var(--ifm-color-content);
+}
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+  .pdfDownloadCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .downloadButton {
+    width: 100%;
+    justify-content: center;
+  }
+}
