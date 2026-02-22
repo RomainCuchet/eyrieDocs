@@ -1,14 +1,12 @@
-yangshun:
-  name: Yangshun Tay
-  title: Ex-Meta Staff Engineer, Co-founder GreatFrontEnd
-  url: https://linkedin.com/in/yangshun
-  image_url: https://github.com/yangshun.png
+rcuchet:
+  name: Romain Cuchet
+  title: Student at Esilv
+  url: https://www.linkedin.com/in/romain-cuchet-0b069b268/
+  image_url: /img/blog-author/rcuchet.png
   page: true
   socials:
-    x: yangshunz
-    linkedin: yangshun
-    github: yangshun
-    newsletter: https://www.greatfrontend.com
+    linkedin: https://www.linkedin.com/in/romain-cuchet-0b069b268/
+    github: https://github.com/RomainCuchet
 
 slorber:
   name: Sébastien Lorber
