@@ -27,6 +27,7 @@ The lack of proper security check and Peoples ID being availble client side enab
 
 ![Peoples](./peoples.png)
 
+
 # Self-XSS & HTML Injection
 
 The application utilizes innerHTML to render user-provided names, creating an opening for Cross-Site Scripting (XSS).

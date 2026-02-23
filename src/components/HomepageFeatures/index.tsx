@@ -11,32 +11,32 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
+    title: 'Security Research Refined',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        All entities are contacted and reports sanitized. When responses fail, we
+        advocate for user safety through transparent awareness.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: 'Knowledge is Power',
+    Svg: require('@site/static/img/undraw_eyrie_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Access sanitized disclosures in our Docs or explore our Blog
+        for penetration test write-ups and security findings.
       </>
     ),
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: 'Defend the Frontier',
+    Svg: require('@site/static/img/undraw_eyrie_nmap.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Empowering you to hack ethically and build a more resilient,
+        safer digital world for everyone.
       </>
     ),
   },
