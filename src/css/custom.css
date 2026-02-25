@@ -77,7 +77,7 @@
 
 .navbar__logo img {
   height: 3.5rem;
-  transition: transform 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .navbar__logo:hover img {
@@ -314,6 +314,22 @@
   border-top: 1px solid var(--ifm-toc-border-color);
 }
 
+.footer__title {
+  color: var(--ifm-color-content);
+}
+
+.footer__link-item {
+  color: var(--ifm-color-content-secondary);
+}
+
+.footer__link-item:hover {
+  color: var(--ifm-color-primary);
+}
+
+.footer__copyright {
+  color: var(--ifm-color-content-secondary);
+}
+
 /* Enhanced Buttons */
 .button {
   border-radius: var(--ifm-global-radius);
@@ -334,11 +350,6 @@
 
 .button--secondary {
   border: 1px solid var(--ifm-toc-border-color);
-}
-
-.button--secondary:hover {
-  background-color: var(--ifm-background-surface-color);
-  border-color: var(--ifm-color-primary);
 }
 
 /* Improved Images in Articles */
