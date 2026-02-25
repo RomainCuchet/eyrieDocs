@@ -56,7 +56,7 @@ An attacker could use "Copy-Paste" schemes, convincing a victim to paste a malic
 ![Stolen Cookies](./stolen_cookies.png)
 
 
-Beyond simple data exfiltration, an attacker can leverage this injection to perform UI Redressing. By mimicking legitimate third-party integrations—such as an 'Sync with Outlook' prompt—the attacker can deceive users into surrendering their Microsoft credentials or authorizing malicious OAuth applications. This transforms a simple client-side injection into a sophisticated gateway for credential harvesting and broader account compromise. 
+Beyond simple data exfiltration, an attacker can leverage this injection to perform UI Redressing. By mimicking legitimate third-party integrations, such as an 'Sync with Outlook' prompt, the attacker can deceive users into surrendering their Microsoft credentials or authorizing malicious OAuth applications. This transforms a simple client-side injection into a sophisticated gateway for credential harvesting and broader account compromise. 
 
 ![alt text](./steal_credentials.png)
 
