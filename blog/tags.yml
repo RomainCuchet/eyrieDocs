@@ -2,3 +2,7 @@ websecurity:
   label: Web Security
   permalink: /web-security
   description: Web Security blog posts
+hardwarehacking:
+  label: Hardware Hacking
+  permalink: /hardware-hacking
+  description: Hardware Hacking blog posts

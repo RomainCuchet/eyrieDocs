@@ -11,8 +11,14 @@ tags: [websecurity]
 
 <!-- truncate -->
 
-# IDOR
+# IDOR Vulnerability: Unauthorized Availability Modification
 
+
+:::danger
+An attacker can bypass password protection and update any user's availability by using a known event URL or leveraging predictable, incremental IDs. Using automated tools, an attacker can overwrite availability data for any participant on any event without prior authorization.
+:::
+  
+  
 The POST request to `SaveTimes.php` relies exclusively on the `person` (User ID) and `event` parameters. Because no session token or password hash is required in the API call, an attacker can modify the `person` ID to overwrite the availability of any other participant.
 
 ![Save Times](./save_times.png)
@@ -23,12 +29,21 @@ Since participant IDs are visible in the client-side source code, an attacker ca
 - Sabotage event planning by clearing or filling others' availability.
 - Automate "Account Takeovers" for specific events using simple scripts.
 
-The lack of proper security check and Peoples ID being availble client side enable anyone to impersonate any user which could lead to organisation issue and enable an attacker to mess with the planification.
 
 ![Peoples](./peoples.png)
 
+The lack of proper security check and Peoples IDs being availble client side (from the event url) enable anyone to impersonate any user which could lead to organisation issue and enable an attacker to mess with the planification.
 
-# Self-XSS & HTML Injection
+![Ids](./ids.png)
+
+Although an event's private URL is difficult to guess due to its random five-character suffix, the use of incremental person and event IDs allows anyone to easily update any meeting and impersonate any user without prior knowledge.
+
+![Reset](./malicious_reset.png)
+
+Furthermore, the attacker does not need to know the schedule or time frame. Since the `slots` parameter is not validated and availability can be of any length, only the last x `slots` are taken into account.
+
+
+# Self-XSS & HTML Injection Vulnerability
 
 The application utilizes innerHTML to render user-provided names, creating an opening for Cross-Site Scripting (XSS).
 
