@@ -2,13 +2,7 @@
 sidebar_position: 0
 ---
 
-## Welcome
-
 Welcome to **Eyrie Docs** - a security documentation hub for the community.
-
-### What You'll Find Here
-
-This documentation portal provides security research, penetration testing reports, and security analysis.
 
 ### Documentation Sections
 

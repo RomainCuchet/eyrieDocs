@@ -121,6 +121,19 @@ const config: Config = {
             },
           ],
         },
+        {
+          title: 'Contact',
+          items: [
+            {
+              label: 'Email',
+              href: 'mailto:romain.cuchet.pro@gmail.com',
+            },
+            {
+              label: 'LinkedIn',
+              href: 'https://www.linkedin.com/in/romain-cuchet-0b069b268/',
+            }
+          ],
+        }
       ],
       copyright: `Copyright © ${new Date().getFullYear()} Romain Cuchet.`,
     },
