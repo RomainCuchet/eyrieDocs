@@ -11,7 +11,7 @@ tags: [websecurity]
 
 <!-- truncate -->
 
-# IDOR Vulnerability: Unauthorized Availability Modification
+## IDOR Vulnerability: Unauthorized Availability Modification
 
 
 :::danger
@@ -43,7 +43,7 @@ Although an event's private URL is difficult to guess due to its random five-cha
 Furthermore, the attacker does not need to know the schedule or time frame. Since the `slots` parameter is not validated and availability can be of any length, only the last x `slots` are taken into account.
 
 
-# Self-XSS & HTML Injection Vulnerability
+## Self-XSS & HTML Injection Vulnerability
 
 The application utilizes innerHTML to render user-provided names, creating an opening for Cross-Site Scripting (XSS).
 

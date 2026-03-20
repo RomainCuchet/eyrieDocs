@@ -11,11 +11,11 @@ Despite the advancements in endpoint security, BadUSB remains one of the most ef
 
 <!-- truncate -->
 
-## 1. HID Exploitation
+## HID Exploitation
 
 When you plug in a BadUSB device, the operating system doesn’t see a "storage drive", it sees a keyboard. Because computers are designed to accept input from users immediately, the device can "type" at superhuman speeds, executing commands before a user even realizes what is happening.
 
-## 2. Scenario: Exfiltrating .env Files
+## Scenario: Exfiltrating .env Files
 
 Modern development environments rely heavily on .env files to store sensitive credentials, including API keys, database strings, and cloud provider tokens.
 
@@ -62,9 +62,21 @@ ENTER
 
 BadUSB enable a variety of malicious actions, ranging from ransomware deployment to persistent backdoors and privilege escalation.
 
-## 3. How to Protect Yourself
+## How to Protect Yourself
 
-- Hardware Hygiene: Never plug in a USB device from an unknown source.
-- Physical Locks: Use Kensington USB Port locks or similar hardware to prevent quick access to ports. According to Nicole Perlroth the Pentagon hot glued its USB ports ...
-- OS Hardening: Configure your OS to require a password for new HID devices (if possible).
-- Endpoint Protection: If you are an entreprise you can use EDR (Endpoint Detection and Response) tools that can flag "rapid typing" behavior typical of HID scripts.
+**Hardware Hygiene & Physical Security**  
+Zero-Trust Peripheral Policy: Never connect unknown or untrusted USB devices. Implement a "Sandboxed Verification" process where suspicious drives are inspected on air-gapped, non-persistent machines.
+
+Physical Port Blocking: Deploy Kensington USB Port Locks or physical blockers to prevent unauthorized access. In ultra-secure environments (SCADA/ICS), extreme measures like epoxy resin or hot glue are used to permanently disable ports to mitigate the risk of HID injections.
+
+**OS Hardening & Configuration**  
+HID Authorization: Configure the OS to require administrative approval or a password before mounting new Human Interface Devices (HID).
+
+USB Power Management: Disable "USB Wake Support" in the BIOS/UEFI to prevent specialized BadUSB devices from waking a locked computer to execute payloads.
+
+**Endpoint Protection & Policy (EDR/GPO)**  
+Behavioral Analysis (EDR): Utilize Endpoint Detection and Response tools to flag abnormal keystroke patterns and block suspicious process trees (e.g., HID -> PowerShell.exe) typical of Rubber Ducky scripts.
+
+Device Control Policies: Use Microsoft Intune or Group Policy Objects (GPO) to enforce "Device Installation Restrictions." This allows you to block all USB classes by default while whitelisting only specific, company-approved Hardware IDs.
+
+Attack Surface Reduction (ASR): Enable Microsoft Defender ASR rules to block the execution of potentially obfuscated scripts or API calls originating from USB-driven commands.
