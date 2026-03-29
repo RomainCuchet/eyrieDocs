@@ -319,6 +319,25 @@
   justify-content: space-evenly;
 }
 
+/* Mermaid diagrams aligned with documentation surface styling */
+.theme-mermaid,
+.docusaurus-mermaid-container {
+  background-color: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-toc-border-color);
+  border-radius: var(--ifm-card-border-radius);
+  box-shadow: var(--ifm-global-shadow-lw);
+  padding: 1rem;
+  margin: 1.25rem 0;
+}
+
+.theme-mermaid svg,
+.docusaurus-mermaid-container svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
 .footer__col {
   flex: 1;
   text-align: center;

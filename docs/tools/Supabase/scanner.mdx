@@ -14,7 +14,11 @@ Supabase scanner is a schema-driven crawler for the REST APIs. It leverages the 
   href="https://github.com/RomainCuchet/eyrieTools/blob/main/web/supabase/scanner.py"
 />
 
-## Supabase scanner
+## Features
+
+![Scanner Output](/img/Tools/Supabase/Scanner/scan.png)
+
+The scanner performs the following steps:
 
 1. Decode the API key payload to extract the project `ref` (used for output file naming).
 2. Request `/rest/v1/` to fetch the OpenAPI schema.
@@ -23,7 +27,7 @@ Supabase scanner is a schema-driven crawler for the REST APIs. It leverages the 
 5. Optionally fallback to `POST` (RPC-focused by default, or all POST-capable routes with `--aggresive`).
 6. Save schema + endpoint results to a timestamped JSON report.
 
-## Key Technical Notes
+**Technical notes**
 
 - The `anon` key is public by design in frontend apps. It must rely on strict RLS and policy design.
 - The `service_role` key is highly privileged and must never be exposed client-side.
@@ -54,7 +58,7 @@ python .\scanner.py `
   </TabItem>
 </Tabs>
 
-Aggressive mode (tries POST fallback on all POST-capable paths):
+Aggressive mode (tries POST fallback on all POST-capable paths) can be enabled with `--aggresive` for a deeper scan but can lead to side effects.
 
 <Tabs groupId="shell">
   <TabItem value="bash" label="Bash" default>
