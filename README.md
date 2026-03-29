@@ -1,41 +1,11 @@
-# Website
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+# eyrieDocs
 
-## Installation
+Website: https://romaincuchet.github.io/eyrieDocs/
 
-```bash
-yarn
-```
+eyrieDocs mission is to publish cybersecurity reports and tools, empowering you to hack ethically to build a more resilient and safer digital world for everyone. All entities are contacted and reports are sanitized. When responses fail, we advocate for user safety through transparent awareness.
 
-## Local Development
+Access sanitized disclosures and tools in the Docs or explore the Blog for penetration test write-ups and security findings. 
 
-```bash
-yarn start
-```
-
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
-
-## Build
-
-```bash
-yarn build
-```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-## Deployment
-
-Using SSH:
-
-```bash
-USE_SSH=true yarn deploy
-```
-
-Not using SSH:
-
-```bash
-GIT_USER=<Your GitHub username> yarn deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+## Defend the Frontier
+We empower you to hack ethically and build a more resilient, safer digital world for everyone.

@@ -16,8 +16,6 @@ Supabase scanner is a schema-driven crawler for the REST APIs. It leverages the 
 
 ## Features
 
-![Scanner Output](/img/Tools/Supabase/Scanner/scan.png)
-
 The scanner performs the following steps:
 
 1. Decode the API key payload to extract the project `ref` (used for output file naming).
@@ -26,6 +24,8 @@ The scanner performs the following steps:
 4. Test each route with `GET` first.
 5. Optionally fallback to `POST` (RPC-focused by default, or all POST-capable routes with `--aggresive`).
 6. Save schema + endpoint results to a timestamped JSON report.
+
+![Scanner Output](/img/Tools/Supabase/Scanner/scan.png)
 
 **Technical notes**
 

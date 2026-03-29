@@ -25,7 +25,7 @@ const FeatureList: FeatureItem[] = [
     Svg: require('@site/static/img/undraw_eyrie_tree.svg').default,
     description: (
       <>
-        Access sanitized disclosures in our Docs or explore our Blog
+        Access sanitized disclosures and tools in the Docs or explore the Blog
         for penetration test write-ups and security findings.
       </>
     ),
