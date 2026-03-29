@@ -1,0 +1,23 @@
+.root {
+  margin: 0 0 1rem;
+}
+
+.row {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.label {
+  font-weight: 600;
+  color: var(--ifm-color-content-secondary);
+}
+
+.link {
+  font-weight: 500;
+}
+
+.description {
+  margin: 0.2rem 0 0;
+  font-size: 0.9rem;
+  color: var(--ifm-color-content-secondary);
+}

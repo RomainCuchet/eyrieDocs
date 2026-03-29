@@ -1,0 +1,107 @@
+---
+sidebar_position: 2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SourceLinkCard from '@site/src/components/SourceLinkCard';
+
+Supabase scanner is a schema-driven crawler for the REST APIs. It leverages the OpenAPI schema exposed at `https://<project-ref>.supabase.co/rest/v1/` to enumerate reachable tables and RPC endpoints. Even when data access is denied, endpoint metadata can still support reconnaissance.
+
+<SourceLinkCard
+  title="Source Code"
+  description=""
+  href="https://github.com/RomainCuchet/eyrieTools/blob/main/web/supabase/scanner.py"
+/>
+
+## Supabase scanner
+
+1. Decode the API key payload to extract the project `ref` (used for output file naming).
+2. Request `/rest/v1/` to fetch the OpenAPI schema.
+3. Enumerate all discovered `paths` (tables and `/rpc/*` routes).
+4. Test each route with `GET` first.
+5. Optionally fallback to `POST` (RPC-focused by default, or all POST-capable routes with `--aggresive`).
+6. Save schema + endpoint results to a timestamped JSON report.
+
+## Key Technical Notes
+
+- The `anon` key is public by design in frontend apps. It must rely on strict RLS and policy design.
+- The `service_role` key is highly privileged and must never be exposed client-side.
+- A `200` response with data is a strong indicator of accessible records.
+- A non-`200` response still provides useful signal (route existence, method behavior, error details).
+
+
+## Running the Scanner
+
+<Tabs groupId="shell">
+  <TabItem value="bash" label="Bash" default>
+
+```bash
+python scanner.py \
+  --base-url "https://<project-ref>.supabase.co/rest/v1/" \
+  --api-key "<anon-or-test-key>"
+```
+
+  </TabItem>
+  <TabItem value="powershell" label="PowerShell">
+
+```powershell
+python .\scanner.py `
+  --base-url "https://<project-ref>.supabase.co/rest/v1/" `
+  --api-key "<anon-or-test-key>"
+```
+
+  </TabItem>
+</Tabs>
+
+Aggressive mode (tries POST fallback on all POST-capable paths):
+
+<Tabs groupId="shell">
+  <TabItem value="bash" label="Bash" default>
+
+```bash
+python scanner.py \
+  --base-url "https://<project-ref>.supabase.co/rest/v1/" \
+  --api-key "<anon-or-test-key>" \
+  --aggresive
+```
+
+  </TabItem>
+  <TabItem value="powershell" label="PowerShell">
+
+```powershell
+python .\scanner.py `
+  --base-url "https://<project-ref>.supabase.co/rest/v1/" `
+  --api-key "<anon-or-test-key>" `
+  --aggresive
+```
+
+  </TabItem>
+</Tabs>
+
+## Interpreting Findings
+
+Prioritize results like:
+
+- Public access to PII tables (`users`, `profiles`, `orders`, etc.)
+- RPC endpoints returning sensitive business data
+- Endpoints returning full records with `select=*`
+- Legacy or undocumented routes still responding
+
+## Defensive Checklist
+
+1. Enable RLS on all sensitive tables.
+2. Add explicit deny-by-default policies for `anon`.
+3. Review and minimize RPC exposure.
+4. Remove deprecated tables, views, and functions.
+5. Restrict CORS and validate origin assumptions.
+6. Rotate leaked keys and monitor suspicious access patterns.
+7. Add security tests in CI for policy regressions.
+
+## Limitations
+
+- This scanner checks exposed REST/RPC routes, not all Postgres attack paths.
+- It does not prove absence of vulnerability.
+- Behavior may vary with API Gateway rules, policies, and custom middleware.
+
+Use the output as triage input, then manually verify high-impact findings.
