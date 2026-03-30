@@ -3,6 +3,6 @@
   "position": 2,
   "link": {
     "type": "generated-index",
-    "description": "Tools for security analysis and system hardening."
+     "description": "All tools in this section are strictly intended for use in security analysis and hardening of systems for which you have explicit, written authorization. Unauthorized use is illegal and may result in severe penalties. These tools are provided to help you identify and remediate vulnerabilities in your own infrastructure or in environments where you have clear, documented consent from the system owner. Always act ethically and responsibly."
   }
 }

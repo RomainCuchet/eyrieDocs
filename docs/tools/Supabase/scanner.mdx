@@ -21,11 +21,9 @@ The scanner performs the following steps:
 1. Decode the API key payload to extract the project `ref` (used for output file naming).
 2. Request `/rest/v1/` to fetch the OpenAPI schema.
 3. Enumerate all discovered `paths` (tables and `/rpc/*` routes).
-4. Test each route with `GET` first.
+4. Test each route with `GET` first (retrives only the fist record on each open table except if `--evil` is activated).
 5. Optionally fallback to `POST` (RPC-focused by default, or all POST-capable routes with `--aggresive`).
 6. Save schema + endpoint results to a timestamped JSON report.
-
-![Scanner Output](/img/Tools/Supabase/Scanner/scan.png)
 
 **Technical notes**
 
@@ -36,6 +34,12 @@ The scanner performs the following steps:
 
 
 ## Running the Scanner
+
+:::warning Legal Notice
+The `--evil` option allows the scanner to attempt to retrieve *all records* from each table, not just the first entry. `--aggresive` may trigger unintended actions or side effects on the target system, especially when POST requests are sent to endpoints.<br/><br/>
+<strong>These options must only be used on systems for which you have <u>explicit, written authorization</u> from the owner or responsible authority.</strong> Unauthorized use of these features to access, extract, or modify data is <u>illegal in most jurisdictions</u> and may result in severe criminal and civil penalties, including prosecution, fines, and imprisonment.<br/><br/>
+<strong>Always act responsibly and ensure you have clear, documented permission before using these options. If in doubt, do not proceed.</strong>
+:::
 
 <Tabs groupId="shell">
   <TabItem value="bash" label="Bash" default>
@@ -60,6 +64,7 @@ python .\scanner.py `
 
 Aggressive mode (tries POST fallback on all POST-capable paths) can be enabled with `--aggresive` for a deeper scan but can lead to side effects.
 
+
 <Tabs groupId="shell">
   <TabItem value="bash" label="Bash" default>
 
@@ -78,6 +83,33 @@ python .\scanner.py `
   --base-url "https://<project-ref>.supabase.co/rest/v1/" `
   --api-key "<anon-or-test-key>" `
   --aggresive
+```
+
+  </TabItem>
+</Tabs>
+
+To retrieve all data from every table (not just the first row), add the `--evil` flag. Only one record is
+enough to confirm an exposed table. While `--evil` can be usefull for a more comprehensive data extraction when authorized
+be aware that contituting a full data dump can have significant legal and ethical implications if done without proper consent.
+
+<Tabs groupId="shell">
+  <TabItem value="bash" label="Bash" default>
+
+```bash
+python scanner.py \
+  --base-url "https://<project-ref>.supabase.co/rest/v1/" \
+  --api-key "<anon-or-test-key>" \
+  --evil
+```
+
+  </TabItem>
+  <TabItem value="powershell" label="PowerShell">
+
+```powershell
+python .\scanner.py `
+  --base-url "https://<project-ref>.supabase.co/rest/v1/" `
+  --api-key "<anon-or-test-key>" `
+  --evil
 ```
 
   </TabItem>
