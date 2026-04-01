@@ -6,138 +6,233 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SourceLinkCard from '@site/src/components/SourceLinkCard';
 
-Supabase scanner is a schema-driven crawler for the REST APIs. It leverages the OpenAPI schema exposed at `https://<project-ref>.supabase.co/rest/v1/` to enumerate reachable tables and RPC endpoints. Even when data access is denied, endpoint metadata can still support reconnaissance.
+Supabase scanner is a schema-driven crawler with a path-driven  fallback.
 
 <SourceLinkCard
   title="Source Code"
-  description=""
+  description="Last update : 2026-04-01"
   href="https://github.com/RomainCuchet/eyrieTools/blob/main/web/supabase/scanner.py"
 />
 
-## Features
+## Overview
 
-The scanner performs the following steps:
+The scanner targets Supabase Data API endpoints and supports two operating modes:
 
-1. Decode the API key payload to extract the project `ref` (used for output file naming).
-2. Request `/rest/v1/` to fetch the OpenAPI schema.
-3. Enumerate all discovered `paths` (tables and `/rpc/*` routes).
-4. Test each route with `GET` first (retrives only the fist record on each open table except if `--evil` is activated).
-5. Optionally fallback to `POST` (RPC-focused by default, or all POST-capable routes with `--aggresive`).
-6. Save schema + endpoint results to a timestamped JSON report.
+1. Schema-driven scan (automatic path discovery from OpenAPI)
+2. Path-driven scan (manual endpoints via `--paths`)
 
-**Technical notes**
+It is designed to work with JWT keys and modern Supabase key formats (`sb_publishable_*`, `sb_secret_*`).
 
-- The `anon` key is public by design in frontend apps. It must rely on strict RLS and policy design.
-- The `service_role` key is highly privileged and must never be exposed client-side.
-- A `200` response with data is a strong indicator of accessible records.
-- A non-`200` response still provides useful signal (route existence, method behavior, error details).
+## Input Model
 
+- `--base-url` is used exactly as provided.
+- `--api-key` is required.
+- `--paths` is optional and enables manual path scanning.
 
-## Running the Scanner
+No automatic URL rewriting is performed.
+
+## Authentication Behavior
+
+The scanner always sends:
+
+- `apikey: <api-key>`
+
+It conditionally sends:
+
+- `Authorization: Bearer <api-key>` only if the key looks like a JWT.
+
+This avoids invalid Bearer usage with `sb_publishable_*` and `sb_secret_*` opaque tokens.
+
+## Scan Flow
+
+1. Request schema from `<base-url>/`.
+2. If schema is accessible, enumerate `paths` and test each endpoint.
+3. If schema is not accessible:
+- use manual fallback if `--paths` is set
+- otherwise stop with a critical error and usage hint
+4. For each endpoint:
+- try `GET` first
+- add `select=*` for non-RPC endpoints
+- always add `limit=1` to GET requests unless `--evil` is set
+- optionally fallback to `POST` for RPC/post-capable routes if `--agresive` is set
+
+## Behavioral Flags
+
+- `--aggresive`
+: Enables broader POST fallback for POST-capable endpoints.
+
+- `--evil`
+: Disables safe limiting and attempts larger/full payload reads.
+
+- `--paths users,orders,/rpc/my_fn`
+: Provides explicit fallback targets when schema discovery is blocked.
 
 :::warning Legal Notice
-The `--evil` option allows the scanner to attempt to retrieve *all records* from each table, not just the first entry. `--aggresive` may trigger unintended actions or side effects on the target system, especially when POST requests are sent to endpoints.<br/><br/>
+`--evil` allows the scanner to attempt to retrieve *all records* from each table, not just the first entry. `--aggresive` may trigger unintended actions or side effects on the target system, especially when POST requests are sent to endpoints.<br/><br/>
 <strong>These options must only be used on systems for which you have <u>explicit, written authorization</u> from the owner or responsible authority.</strong> Unauthorized use of these features to access, extract, or modify data is <u>illegal in most jurisdictions</u> and may result in severe criminal and civil penalties, including prosecution, fines, and imprisonment.<br/><br/>
 <strong>Always act responsibly and ensure you have clear, documented permission before using these options. If in doubt, do not proceed.</strong>
 :::
 
-<Tabs groupId="shell">
-  <TabItem value="bash" label="Bash" default>
+## Warning and Error Behavior
 
-```bash
-python scanner.py \
-  --base-url "https://<project-ref>.supabase.co/rest/v1/" \
-  --api-key "<anon-or-test-key>"
+When schema fetch fails and the base URL does not include `/rest/v1`, the scanner prints:
+
+- warning about potential missing `/rest/v1`
+
+If schema fetch fails and `--paths` is missing, it prints a critical error and exits.
+
+## Output Format
+
+Results are written under:
+
+- `web/supabase/output/`
+
+### Filename
+
+The output filename prefix is built from the Supabase instance name extracted via regex from base URL:
+
+- regex source: part between `//` and `.supabase`
+- example: `https://mijkjflyivdlfsgfcyjw.supabase.co/rest/v1` -> `mijkjflyivdlfsgfcyjw`
+
+When a JWT `ref` can also be decoded and differs from instance name, both may be included.
+
+### JSON payload
+
+Each output file contains:
+
+- `instance`: inferred Supabase instance name from URL
+- `schema`: OpenAPI schema object when available (or `{}`)
+- `options_used`: execution metadata
+- `results`: endpoint-level scan results
+
+`options_used` includes:
+
+- `used_flags`: names of all flags used in the run
+- `api_key_type`: inferred key type
+- `with_values`: only safe values (`--base-url`, `--paths` when provided)
+- `without_values`: sensitive/boolean flags without values (for example `--api-key`, `--aggresive`, `--evil`)
+
+## API Key Type Inference
+
+The scanner infers and stores one of:
+
+- `sb_publishable`
+- `sb_secret`
+- `jwt`
+- `unknown`
+
+Inference is prefix-based for `sb_*` keys and structure-based for JWT.
+
+## Expected Usage Patterns
+
+### Auto-discovery mode
+
+<Tabs groupId="shell">
+  <TabItem value="powershell" label="PowerShell" default>
+
+```powershell
+py .\scanner.py --base-url "https://<project>.supabase.co/rest/v1" --api-key "<jwt_or_allowed_key>"
 ```
 
   </TabItem>
-  <TabItem value="powershell" label="PowerShell">
+  <TabItem value="bash" label="Bash">
 
-```powershell
-python .\scanner.py `
-  --base-url "https://<project-ref>.supabase.co/rest/v1/" `
-  --api-key "<anon-or-test-key>"
+```bash
+python scanner.py --base-url "https://<project>.supabase.co/rest/v1" --api-key "<jwt_or_allowed_key>"
 ```
 
   </TabItem>
 </Tabs>
 
-Aggressive mode (tries POST fallback on all POST-capable paths) can be enabled with `--aggresive` for a deeper scan but can lead to side effects.
-
+### Manual fallback mode
 
 <Tabs groupId="shell">
-  <TabItem value="bash" label="Bash" default>
+  <TabItem value="powershell" label="PowerShell" default>
 
-```bash
-python scanner.py \
-  --base-url "https://<project-ref>.supabase.co/rest/v1/" \
-  --api-key "<anon-or-test-key>" \
-  --aggresive
+```powershell
+py .\scanner.py --base-url "https://<project>.supabase.co/rest/v1" --api-key "sb_publishable_xxx" --paths users,orders,/rpc/my_fn
 ```
 
   </TabItem>
-  <TabItem value="powershell" label="PowerShell">
+  <TabItem value="bash" label="Bash">
 
-```powershell
-python .\scanner.py `
-  --base-url "https://<project-ref>.supabase.co/rest/v1/" `
-  --api-key "<anon-or-test-key>" `
-  --aggresive
+```bash
+python scanner.py --base-url "https://<project>.supabase.co/rest/v1" --api-key "sb_publishable_xxx" --paths users,orders,/rpc/my_fn
 ```
 
   </TabItem>
 </Tabs>
 
-To retrieve all data from every table (not just the first row), add the `--evil` flag. Only one record is
-enough to confirm an exposed table. While `--evil` can be usefull for a more comprehensive data extraction when authorized
-be aware that contituting a full data dump can have significant legal and ethical implications if done without proper consent.
+### Root URL with potential missing REST prefix
 
 <Tabs groupId="shell">
-  <TabItem value="bash" label="Bash" default>
+  <TabItem value="powershell" label="PowerShell" default>
 
-```bash
-python scanner.py \
-  --base-url "https://<project-ref>.supabase.co/rest/v1/" \
-  --api-key "<anon-or-test-key>" \
-  --evil
+```powershell
+py .\scanner.py --base-url "https://<project>.supabase.co" --api-key "..." --paths users
 ```
 
   </TabItem>
-  <TabItem value="powershell" label="PowerShell">
+  <TabItem value="bash" label="Bash">
 
-```powershell
-python .\scanner.py `
-  --base-url "https://<project-ref>.supabase.co/rest/v1/" `
-  --api-key "<anon-or-test-key>" `
-  --evil
+```bash
+python scanner.py --base-url "https://<project>.supabase.co" --api-key "..." --paths users
 ```
 
   </TabItem>
 </Tabs>
 
-## Interpreting Findings
+#### Advanced Usage
 
-Prioritize results like:
+<Tabs groupId="shell">
+  <TabItem value="powershell" label="PowerShell" default>
 
-- Public access to PII tables (`users`, `profiles`, `orders`, etc.)
-- RPC endpoints returning sensitive business data
-- Endpoints returning full records with `select=*`
-- Legacy or undocumented routes still responding
+```powershell
+# Aggressive scan with POST fallback
+py .\scanner.py --base-url "https://<project>.supabase.co/rest/v1" --api-key "..." --aggresive
 
-## Defensive Checklist
+# Full data extraction (use with caution)
+py .\scanner.py --base-url "https://<project>.supabase.co/rest/v1" --api-key "..." --evil
 
-1. Enable RLS on all sensitive tables.
-2. Add explicit deny-by-default policies for `anon`.
-3. Review and minimize RPC exposure.
-4. Remove deprecated tables, views, and functions.
-5. Restrict CORS and validate origin assumptions.
-6. Rotate leaked keys and monitor suspicious access patterns.
-7. Add security tests in CI for policy regressions.
+# Combine flags and manual paths
+py .\scanner.py --base-url "https://<project>.supabase.co/rest/v1" --api-key "..." --aggresive --evil --paths users,orders
+```
 
-## Limitations
+  </TabItem>
+  <TabItem value="bash" label="Bash">
 
-- This scanner checks exposed REST/RPC routes, not all Postgres attack paths.
-- It does not prove absence of vulnerability.
-- Behavior may vary with API Gateway rules, policies, and custom middleware.
+```bash
+# Aggressive scan with POST fallback
+python scanner.py --base-url "https://<project>.supabase.co/rest/v1" --api-key "..." --aggresive
 
-Use the output as triage input, then manually verify high-impact findings.
+# Full data extraction (use with caution)
+python scanner.py --base-url "https://<project>.supabase.co/rest/v1" --api-key "..." --evil
+
+# Combine flags and manual paths
+python scanner.py --base-url "https://<project>.supabase.co/rest/v1" --api-key "..." --aggresive --evil --paths users,orders
+```
+
+  </TabItem>
+</Tabs>
+
+> **Note:**
+> - Use `py` or `python` depending on your environment.
+> - Always review legal/ethical implications before using `--evil` or scanning third-party endpoints.
+
+## Demo
+
+:::note
+This demo is based on [JAMstack case study](../../pentest/FictionnalCaseStudy/JAMstack.mdx) and uses the same intentionally misconfigured Supabase instance.
+:::
+
+![Scanner Demo](/img/Tools/Supabase/Scanner/scanner_demo.png)
+
+1. The scanner is lauched using a `sb_publishable` type key and the base URL without `/rest/v1` suffix. The scanner detects the missing REST prefix and continues with a warning.
+2. The scanner fails to fetch the OpenAPI schema (as it is blocked by the configuration) and prints a critical error with usage hints. Many misconfigured real-world instances enable public access to the schema, which would allow the scanner to automatically discover all endpoints without manual input.
+3. The scanner is relaunched with the `--paths` flag to provide manual fallback endpoints. It successfully tests the `users` endpoint and retrieves the first user record, demonstrating the potential data exposure from the misconfiguration.
+4. The scanner is relauched with the `sb_secret` type key and the same base URL. It is just for demonstration purposes as `sb_secret` keys are not meant to be used in frontend code and should not be exposed. The result is the same as if OpenAPI schema was exposed as described in step 2.
+
+As `rcp/inc_profit is exposed` anyone that's able to discover it can modify the marketplace profit without any authorization.
+
+![Exposed RPC](/img/CaseStudy/JAMstack/exposed_rpc.png)
+
