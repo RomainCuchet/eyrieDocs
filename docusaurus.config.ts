@@ -104,24 +104,32 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: 'Sections',
           items: [
             {
               label: 'Docs',
               to: '/docs/intro',
             },
-          ],
-        },
-        {
-          title: 'More',
-          items: [
             {
               label: 'Blog',
               to: '/blog',
             },
+          ],
+        },
+        {
+          title: 'Githubs',
+          items: [
             {
-              label: 'GitHub',
+              label: 'eyrieDocs',
               href: 'https://github.com/RomainCuchet/eyrieDocs',
+            },
+            {
+              label: 'eyrieToolss',
+              href: 'https://github.com/RomainCuchet/eyrieTools',
+            },
+            {
+              label: 'eyrieLabs',
+              href: 'https://github.com/RomainCuchet/eyrieLabs',
             },
           ],
         },

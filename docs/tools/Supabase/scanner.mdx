@@ -211,7 +211,7 @@ python scanner.py --base-url "https://<project>.supabase.co/rest/v1" --api-key "
 # Combine flags and manual paths
 python scanner.py --base-url "https://<project>.supabase.co/rest/v1" --api-key "..." --aggresive --evil --paths users,orders
 ```
-
+FOP
   </TabItem>
 </Tabs>
 
@@ -230,7 +230,8 @@ This demo is based on [JAMstack case study](../../pentest/FictionnalCaseStudy/JA
 1. The scanner is lauched using a `sb_publishable` type key and the base URL without `/rest/v1` suffix. The scanner detects the missing REST prefix and continues with a warning.
 2. The scanner fails to fetch the OpenAPI schema (as it is blocked by the configuration) and prints a critical error with usage hints. Many misconfigured real-world instances enable public access to the schema, which would allow the scanner to automatically discover all endpoints without manual input.
 3. The scanner is relaunched with the `--paths` flag to provide manual fallback endpoints. It successfully tests the `users` endpoint and retrieves the first user record, demonstrating the potential data exposure from the misconfiguration.
-4. The scanner is relauched with the `sb_secret` type key and the same base URL. It is just for demonstration purposes as `sb_secret` keys are not meant to be used in frontend code and should not be exposed. The result is the same as if OpenAPI schema was exposed as described in step 2.
+. The scanner is relauched with the `sb_secret` type key and the same base URL. It is just for demonstration purposes as `sb_secret` keys are not meant to be used in frontend code and should not be exposed. 
+The result is the same as if OpenAPI's schema was exposed as described in step 2.
 
 As `rcp/inc_profit is exposed` anyone that's able to discover it can modify the marketplace profit without any authorization.
 
