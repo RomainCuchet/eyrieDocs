@@ -72,6 +72,12 @@ const config: Config = {
   themeConfig: {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
+    metadata: [
+      {
+        name: 'algolia-site-verification',
+        content: 'FCB7637139F50EC8',
+      },
+    ],
     mermaid: {
       theme: {light: 'neutral', dark: 'dark'},
     },
