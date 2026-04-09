@@ -2,6 +2,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
+
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
@@ -80,6 +81,12 @@ const config: Config = {
     ],
     mermaid: {
       theme: {light: 'neutral', dark: 'dark'},
+    },
+    algolia:{
+      appId: 'K3389BOT5V',
+      indexName: 'Documentation eyrieDocs',
+      apiKey: '8d0b140551c3a60fbb581365e2eecc91',
+      contextualSearch: false,
     },
     colorMode: {
       respectPrefersColorScheme: true,
